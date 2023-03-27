@@ -1,7 +1,7 @@
 package net.rizecookey.ptctest.test.line
 
-import net.rizecookey.ptctest.process.TestExecutor
+import net.rizecookey.ptctest.process.TestProcessHandle
 
 interface ProtocolLine {
-    fun handle(executor: TestExecutor): LineCheckOutput
+    fun handle(executor: TestProcessHandle): LineCheckOutput
 }

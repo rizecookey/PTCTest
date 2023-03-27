@@ -1,19 +1,21 @@
 package net.rizecookey.ptctest.test
 
 import net.rizecookey.ptctest.test.line.ProtocolLine
+import net.rizecookey.ptctest.test.parser.CommentLineParser
 import net.rizecookey.ptctest.test.parser.InputLineParser
+import net.rizecookey.ptctest.test.parser.OutputLineParser
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 
 val PARSERS = arrayOf(
     { line: String -> InputLineParser(line) },
-
-
+    { line: String -> CommentLineParser(line) },
+    { line: String -> OutputLineParser(line) }
 )
 
-class Protocol(file: Path) {
-    private val lines: List<ProtocolLine>
+class Protocol(file: Path, val directory: Path) {
+    val lines: List<ProtocolLine>
 
     init {
         if (!Files.isRegularFile(file)) {
@@ -36,6 +38,6 @@ class Protocol(file: Path) {
             }
         }
 
-        return lines
+        return lines.toList()
     }
 }
