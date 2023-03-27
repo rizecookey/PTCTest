@@ -1,6 +1,6 @@
 package net.rizecookey.ptctest.test.parser
 
-import net.rizecookey.ptctest.test.InputLine
+import net.rizecookey.ptctest.test.line.InputLine
 import java.util.regex.Pattern
 
 class InputLineParser(line: String) : RegexParser<InputLine>(line, Pattern.compile("^> (?<input>.*)$")) {

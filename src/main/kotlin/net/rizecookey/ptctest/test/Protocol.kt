@@ -1,5 +1,6 @@
 package net.rizecookey.ptctest.test
 
+import net.rizecookey.ptctest.test.line.ProtocolLine
 import net.rizecookey.ptctest.test.parser.InputLineParser
 import java.io.IOException
 import java.nio.file.Files
