@@ -13,6 +13,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
+    implementation("org.fusesource.jansi:jansi:2.4.0")
 }
 
 tasks.test {
@@ -24,5 +25,5 @@ kotlin {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("net.rizecookey.ptctest.cli.PTCTestKt")
 }
