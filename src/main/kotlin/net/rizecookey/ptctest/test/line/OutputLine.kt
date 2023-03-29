@@ -3,14 +3,18 @@ package net.rizecookey.ptctest.test.line
 import net.rizecookey.ptctest.process.TestProcessHandle
 
 class OutputLine(val expectedOutput: String) : ProtocolLine {
-    override fun handle(executor: TestProcessHandle): LineCheckResult {
+    override fun handle(executor: TestProcessHandle) {
         var receivedLine = ""
 
         var fullLineReceived = false
         while (!fullLineReceived) {
             val c = executor.input.read()
             if (c == -1) {
-                return LineCheckResult("Early termination detected!", LineCheckResult.Type.MISMATCHING_OUTPUT)
+                executor.log(LineCheckResult(receivedLine, LineCheckResult.Type.MATCHING_OUTPUT))
+                executor.log(
+                    LineCheckResult("Early termination detected!", LineCheckResult.Type.MISMATCHING_OUTPUT)
+                )
+                return
             }
 
             receivedLine += c.toChar()
@@ -18,13 +22,10 @@ class OutputLine(val expectedOutput: String) : ProtocolLine {
             fullLineReceived = receivedLine.endsWith(System.lineSeparator())
         }
 
-        return if (receivedLine != expectedOutput) {
-            LineCheckResult(
-                Pair(receivedLine, LineCheckResult.Type.MATCHING_OUTPUT),
-                Pair("Expected: $expectedOutput", LineCheckResult.Type.MISMATCHING_OUTPUT)
-            )
-        } else {
-            LineCheckResult(receivedLine, LineCheckResult.Type.MATCHING_OUTPUT)
+        executor.log(LineCheckResult(receivedLine, LineCheckResult.Type.MATCHING_OUTPUT))
+
+        if (receivedLine != expectedOutput) {
+            executor.log(LineCheckResult("Expected: $expectedOutput", LineCheckResult.Type.MISMATCHING_OUTPUT))
         }
     }
 }

@@ -1,20 +1,8 @@
 package net.rizecookey.ptctest.test.line
 
-class LineCheckResult {
-    val lines: List<Pair<String, Type>>
-
-    constructor(line: String, type: Type) {
-        this.lines = listOf(Pair(line, type))
-    }
-
-    constructor(line: Pair<String, Type>, vararg lines: Pair<String, Type>) {
-        val total = arrayListOf(line)
-        total.addAll(lines)
-        this.lines = total.toList()
-    }
-
+class LineCheckResult(val line: String, val type: Type) {
     fun isSuccessful(): Boolean {
-        return lines.all { line -> line.second != Type.MISMATCHING_OUTPUT }
+        return type != Type.MISMATCHING_OUTPUT
     }
 
     enum class Type {
