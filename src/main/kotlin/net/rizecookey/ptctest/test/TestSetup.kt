@@ -51,15 +51,11 @@ class TestSetup(startCommand: String, protocol: Path, val workingDirectory: Path
         return argsList
     }
 
-    fun execute(): TestProcessHandle {
+    fun createHandle(): TestProcessHandle {
         val process = ProcessBuilder(commandArgs)
             .directory(workingDirectory.toAbsolutePath().toFile())
             .redirectErrorStream(true)
             .start()
-        val handle = TestProcessHandle(process, this)
-
-        handle.start()
-
-        return handle
+        return TestProcessHandle(process, this)
     }
 }

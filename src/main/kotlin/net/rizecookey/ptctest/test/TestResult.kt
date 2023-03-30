@@ -1,9 +1,8 @@
 package net.rizecookey.ptctest.test
 
-import net.rizecookey.ptctest.test.line.LineCheckResult
+import net.rizecookey.ptctest.test.result.SingleResult
 
-data class TestResult(val lineResults: List<LineCheckResult>) {
-    fun isSuccessful(): Boolean {
-        return lineResults.all { result -> result.isSuccessful() }
-    }
+data class TestResult(val results: List<SingleResult>) {
+    val success: Boolean
+        get() = results.all { results -> results.success }
 }

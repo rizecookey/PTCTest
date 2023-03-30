@@ -2,9 +2,7 @@ package net.rizecookey.ptctest.process
 
 import net.rizecookey.ptctest.test.TestResult
 import net.rizecookey.ptctest.test.TestSetup
-import net.rizecookey.ptctest.test.line.LineCheckResult
-import org.fusesource.jansi.Ansi.Color
-import org.fusesource.jansi.Ansi.ansi
+import net.rizecookey.ptctest.test.result.SingleResult
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
@@ -13,7 +11,8 @@ class TestProcessHandle(val process: Process, val protocol: TestSetup) {
     val output: OutputStreamWriter = OutputStreamWriter(process.outputStream)
     val input: BufferedReader = BufferedReader(InputStreamReader(process.inputStream))
 
-    private val lines: MutableList<LineCheckResult> = arrayListOf()
+    private val results: MutableList<SingleResult> = arrayListOf()
+    private val resultCallbacks: MutableList<(SingleResult) -> Unit> = arrayListOf()
     var result: TestResult? = null
         private set
     var state: State = State.INITIALIZED
@@ -25,6 +24,10 @@ class TestProcessHandle(val process: Process, val protocol: TestSetup) {
 
     fun hasEnded(): Boolean {
         return state == State.ENDED
+    }
+
+    fun onResult(callback: (SingleResult) -> Unit) {
+        resultCallbacks.add(callback)
     }
 
     fun start() {
@@ -40,23 +43,18 @@ class TestProcessHandle(val process: Process, val protocol: TestSetup) {
 
     fun stop() {
         this.state = State.ENDED
+        this.output.close()
+        this.input.close()
     }
 
     private fun collectResults() {
-        this.result = TestResult(lines)
+        this.result = TestResult(results)
         this.state = State.ENDED
     }
 
-    fun log(result: LineCheckResult) {
-        this.lines.add(result)
+    fun addResult(result: SingleResult) {
+        this.results.add(result)
 
-        val color = when (result.type) {
-            LineCheckResult.Type.MATCHING_OUTPUT -> Color.WHITE
-            LineCheckResult.Type.MISMATCHING_OUTPUT -> Color.RED
-            LineCheckResult.Type.INPUT -> Color.GREEN
-            LineCheckResult.Type.COMMENT -> Color.BLUE
-        }
-
-        println(ansi().fgBright(color).a(result.line).reset())
+        this.resultCallbacks.forEach { it(result) }
     }
 }
